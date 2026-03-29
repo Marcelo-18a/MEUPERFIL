@@ -1,3 +1,7 @@
+import ActionButtons, { ActionButton } from '@/components/ActionButtons';
+import PinnedReposSection, { Repository } from '@/components/PinnedReposSection';
+import ProfileHeader from '@/components/ProfileHeader';
+import StatsSection, { Stat } from '@/components/StatsSection';
 import React from 'react';
 import {
 	Image,
@@ -7,7 +11,6 @@ import {
 	StatusBar,
 	StyleSheet,
 	Text,
-	TouchableOpacity,
 	View,
 } from 'react-native';
 
@@ -17,6 +20,48 @@ const INSTAGRAM_URL = 'https://instagram.com/sla_marcello';
 const GITHUB_URL = 'https://github.com/Marcelo-18a';
 const WHATSAPP_URL = 'https://wa.me/5513997940109?text=Oi%20Marcelo%2C%20vim%20pelo%20seu%20perfil!';
 const BOTTOM_IMAGE_URL = 'https://t2.tudocdn.net/526508?w=646&h=284';
+
+const PROFILE_STATS: Stat[] = [
+	{ label: 'Repositórios', value: '4' },
+	{ label: 'Seguidores', value: '12' },
+	{ label: 'Seguindo', value: '18' },
+	{ label: 'Contribuições', value: '76' },
+];
+
+const PINNED_REPOS: Repository[] = [
+	{
+		name: 'Marcelo-18a',
+		description: 'Meu README.md pessoal com stats e informações',
+		url: 'https://github.com/Marcelo-18a/Marcelo-18a',
+		language: 'Markdown',
+		stars: 0,
+		imageUrl: 'https://opengraph.githubassets.com/default-image',
+	},
+	{
+		name: 'Axis_equipe',
+		description: 'Projeto de equipe - Desenvolvimento colaborativo',
+		url: 'https://github.com/Marcelo-18a/Axis_equipe',
+		language: 'TypeScript',
+		stars: 2,
+		imageUrl: 'https://opengraph.githubassets.com/default-image',
+	},
+	{
+		name: 'Green-api',
+		description: 'Integração com API Green - Automação WhatsApp',
+		url: 'https://github.com/Marcelo-18a/Green-api',
+		language: 'JavaScript',
+		stars: 1,
+		imageUrl: 'https://opengraph.githubassets.com/default-image',
+	},
+	{
+		name: 'MEUPERFIL',
+		description: 'Seu portfólio pessoal com Expo e React Native',
+		url: 'https://github.com/Marcelo-18a/MEUPERFIL',
+		language: 'TypeScript',
+		stars: 0,
+		imageUrl: 'https://opengraph.githubassets.com/default-image',
+	},
+];
 
 const GAMES = [
 	{
@@ -63,33 +108,51 @@ export default function ProfileScreen() {
 		}
 	};
 
+	const actionButtons: ActionButton[] = [
+		{
+			label: 'Entrar no GitHub',
+			onPress: handleOpenGithub,
+			isPrimary: true,
+		},
+		{
+			label: 'Falar no WhatsApp',
+			onPress: handleOpenWhatsApp,
+			isPrimary: false,
+		},
+	];
+
 	return (
 		<SafeAreaView style={styles.safeArea}>
 			<StatusBar barStyle="light-content" />
 
 			<ScrollView contentContainerStyle={styles.container}>
+				{/* Profile Header */}
+				<ProfileHeader
+					name="Marcelo"
+					username="@sla_marcello"
+					bio="Prazer, Marcelo! Tenho 20 anos e sou apaixonado por tecnologia desde criança. Sempre fui curioso e gostei de descobrir como tudo funciona, e foi esse interesse que me levou a entrar no curso de Desenvolvimento de Sistemas. Atualmente, estou no 4º semestre e estou adorando cada momento dessa jornada. Adoro aprender novas linguagens de programação, explorar frameworks e criar projetos que possam impactar positivamente a vida das pessoas. Estou animado para continuar crescendo como desenvolvedor e contribuir para a comunidade de tecnologia!"
+					profileImageUrl={PROFILE_IMAGE_URL}
+					instagramUrl={INSTAGRAM_URL}
+					onInstagramPress={handleOpenInstagram}
+				/>
+
+				{/* Action Buttons */}
 				<View style={styles.card}>
-					<Image source={{ uri: PROFILE_IMAGE_URL }} style={styles.avatar} />
-
-					<Text style={styles.name}>Marcelo</Text>
-					<TouchableOpacity activeOpacity={0.8} onPress={handleOpenInstagram}>
-						<Text style={styles.username}>@sla_marcello</Text>
-					</TouchableOpacity>
-					<Text style={styles.bio}>
-						Prazer, Marcelo! Tenho 20 anos e sou apaixonado por tecnologia desde criança. Sempre fui curioso e gostei de descobrir como tudo funciona, e foi esse interesse que me levou a entrar no curso de Desenvolvimento de Sistemas. Atualmente, estou no 4º semestre e estou adorando cada momento dessa jornada. Adoro aprender novas linguagens de programação, explorar frameworks e criar projetos que possam impactar positivamente a vida das pessoas. Estou animado para continuar crescendo como desenvolvedor e contribuir para a comunidade de tecnologia!
-					</Text>
-
-					<View style={styles.actionsRow}>
-						<TouchableOpacity style={styles.primaryButton} activeOpacity={0.85} onPress={handleOpenGithub}>
-							<Text style={styles.primaryButtonText}>Entrar no GitHub</Text>
-						</TouchableOpacity>
-						<TouchableOpacity style={styles.secondaryButton} activeOpacity={0.85} onPress={handleOpenWhatsApp}>
-							<Text style={styles.secondaryButtonText}>Falar no WhatsApp</Text>
-						</TouchableOpacity>
-					</View>
-
+					<ActionButtons buttons={actionButtons} />
 				</View>
 
+				{/* Statistics Section */}
+				<View style={styles.card}>
+					<Text style={styles.sectionTitle}>Minhas Estatísticas</Text>
+					<StatsSection stats={PROFILE_STATS} />
+				</View>
+
+				{/* Pinned Repositories Section */}
+				<View style={styles.card}>
+					<PinnedReposSection repos={PINNED_REPOS} title="Repositórios Fixados" />
+				</View>
+
+				{/* Games Section */}
 				<View style={styles.gamesSection}>
 					<Text style={styles.gamesTitle}>Jogos que eu ja joguei</Text>
 
@@ -119,6 +182,7 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 20,
 		paddingVertical: 24,
 		backgroundColor: '#07090f',
+		gap: 16,
 	},
 	card: {
 		borderRadius: 24,
@@ -127,102 +191,21 @@ const styles = StyleSheet.create({
 		borderColor: '#1e2940',
 		paddingVertical: 30,
 		paddingHorizontal: 22,
-		alignItems: 'center',
 		shadowColor: '#000',
 		shadowOpacity: 0.35,
 		shadowRadius: 16,
 		shadowOffset: { width: 0, height: 10 },
 		elevation: 6,
 	},
-	avatar: {
-		width: 120,
-		height: 120,
-		borderRadius: 60,
-		borderWidth: 3,
-		borderColor: '#43a9ff',
+	sectionTitle: {
+		color: '#f8fbff',
+		fontSize: 22,
+		fontWeight: '700',
 		marginBottom: 14,
-	},
-	name: {
-		color: '#f8fbff',
-		fontSize: 28,
-		fontWeight: '700',
-		letterSpacing: 0.2,
-	},
-	username: {
-		color: '#8da5c5',
-		fontSize: 15,
-		marginTop: 4,
-	},
-	bio: {
-		color: '#c2d3eb',
-		fontSize: 14,
-		textAlign: 'center',
-		marginTop: 14,
-		lineHeight: 21,
-		maxWidth: 300,
-	},
-	statsRow: {
-		marginTop: 24,
-		width: '100%',
-		flexDirection: 'row',
-		justifyContent: 'space-between',
-		gap: 10,
-	},
-	statBox: {
-		flex: 1,
-		backgroundColor: '#0b1020',
-		borderRadius: 14,
-		paddingVertical: 14,
-		borderWidth: 1,
-		borderColor: '#1f2f53',
-		alignItems: 'center',
-	},
-	statValue: {
-		color: '#f8fbff',
-		fontSize: 18,
-		fontWeight: '700',
-	},
-	statLabel: {
-		color: '#87a0c3',
-		fontSize: 12,
-		marginTop: 3,
-		textTransform: 'uppercase',
-		letterSpacing: 0.8,
-	},
-	actionsRow: {
-		marginTop: 22,
-		width: '100%',
-		flexDirection: 'row',
-		gap: 10,
-	},
-	primaryButton: {
-		flex: 1,
-		backgroundColor: '#43a9ff',
-		borderRadius: 12,
-		paddingVertical: 13,
-		alignItems: 'center',
-	},
-	primaryButtonText: {
-		color: '#041325',
-		fontSize: 14,
-		fontWeight: '700',
-	},
-	secondaryButton: {
-		flex: 1,
-		backgroundColor: '#16213a',
-		borderRadius: 12,
-		paddingVertical: 13,
-		alignItems: 'center',
-		borderWidth: 1,
-		borderColor: '#2a3f67',
-	},
-	secondaryButtonText: {
-		color: '#d8e6f7',
-		fontSize: 14,
-		fontWeight: '600',
 	},
 	gamesSection: {
 		marginTop: 18,
+		marginBottom: 20,
 		gap: 12,
 	},
 	gamesTitle: {
